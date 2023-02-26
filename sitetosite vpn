@@ -29,7 +29,7 @@ az network vnet subnet create --address-prefix 10.1.0.0/24 --name GatewaySubnet 
 az network vnet subnet create --address-prefix 10.1.1.0/24 --name Vmsubnet --resource-group Hub --vnet-name onprem
 
 az network public-ip create --name onpremVMPubIP --resource-group Hub --location eastus --allocation-method Dynamic
-az network nic create --resource-group Hub -n onpremVMNIC --location eastus --subnet HubVM --private-ip-address 10.1.10.10 --vnet-name onprem --public-ip-address HubVMPubIP --ip-forwarding true
+az network nic create --resource-group Hub -n onpremVMNIC --location eastus --subnet HubVM --private-ip-address 10.1.10.10 --vnet-name onprem --public-ip-address onpremVMPubIP --ip-forwarding true
 az vm create -n HubVM -g Hub --image UbuntuLTS --admin-username demouser --admin-password Microsoft123$ --nics onpremVMNIC --no-wait 
 az network public-ip create --name onprem-VNGpubip --resource-group Hub --allocation-method Dynamic
 az network vnet-gateway create --name onprem-VNG --public-ip-address onprem-VNGpubip --resource-group Hub --vnet onprem --gateway-type Vpn --vpn-type RouteBased --sku VpnGw1 --no-wait 
