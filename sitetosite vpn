@@ -54,3 +54,28 @@ az network local-gateway create --gateway-ip-address <Azure-VNGpubip> --name onp
 
 az network vpn-connection create --name to-azure --resource-group Hub --vnet-gateway1 onprem-VNG -l eastus --shared-key Microsoft --local-gateway2 onpremlng
 
+
+
+To check advertise route from VNG 
+
+az network vnet-gateway list-advertised-routes -g Hub -n onprem-VNG --peer 10.1.0.254
+
+
+az network vnet-gateway list-advertised-routes -g Hub -n Azure-VNG --peer 10.0.0.254
+
+
+To check effective route of VM 
+
+
+
+rg=Hub
+vm=Hubvm
+# Retrieve the NIC names using the Azure CLI
+nics=$(az vm show --name $vm --resource-group $rg --query 'networkProfile.networkInterfaces[].id' -o tsv | awk -F'/' '{print $9}')
+# Show the effective route table for each NIC
+for nic in $nics; do
+echo "Effective route table for NIC: $nic"
+az network nic show-effective-route-table -g $rg -n $nic -o table | grep -v 'None'
+echo
+done
+
