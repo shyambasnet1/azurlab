@@ -42,11 +42,15 @@ az network public-ip show -g Hub -n onprem-VNGpubip --query "{address: ipAddress
 
 Do not move forward with the lab until the VPN GW is fully provisioned. The GW is fully provisioned when the previous command returns a public IP adress. Build the local network gaetway. Make sure to change " onprem-VNGpubip" to the correct public IP
 
-az network local-gateway create --gateway-ip-address ***onprem-VNGpubipP*** --name to-onprem --resource-group Hub --local-address-prefixes 10.1.0.0/16
-az network vpn-connection create --name to-onprem --resource-group Hub --vnet-gateway1 Azure-VNG -l eastus --shared-key Microsoft --local-gateway2 to-onprem
 
 
+az network local-gateway create --gateway-ip-address  ***onprem-VNGpubipP***  --name azurelng --resource-group Hub --local-address-prefixes 10.1.0.0/16
+az network vpn-connection create --name to-onprem --resource-group Hub --vnet-gateway1 Azure-VNG -l eastus --shared-key Microsoft --local-gateway2 azurelng
 
 Create another local-gateway and connection 
-az network local-gateway create --gateway-ip-address <Azure-VNGpubip> --name to-azure --resource-group Hub --local-address-prefixes 10.0.0.0/16
-az network vpn-connection create --name to-azure --resource-group Hub --vnet-gateway1 onprem-VNG -l eastus --shared-key Microsoft --local-gateway2 to-azure
+
+
+az network local-gateway create --gateway-ip-address <Azure-VNGpubip> --name onpremlng --resource-group Hub --local-address-prefixes 10.0.0.0/16
+
+az network vpn-connection create --name to-azure --resource-group Hub --vnet-gateway1 onprem-VNG -l eastus --shared-key Microsoft --local-gateway2 onpremlng
+
