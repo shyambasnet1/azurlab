@@ -1,6 +1,7 @@
 Base topology 
 The lab deployes an azure VPN gateway into VNET. We deploy a VPN gateway in seperate VNET to similate two different side. 
 
+HUB vnet >>VPN gateway>> VPN site to site connection <<VPN gateway>> on prem vnet
 
 
 
