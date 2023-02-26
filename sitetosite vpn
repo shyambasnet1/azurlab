@@ -24,9 +24,9 @@ Build On  Another  VNETs and Subnets
 
 
 
-az network vnet create --resource-group Hub --name onprem --location eastus --address-prefixes 10.1.0.0/16 --subnet-name HubVM --subnet-prefix 10.0.10.0/24
-az network vnet subnet create --address-prefix 10.0.0.0/24 --name GatewaySubnet --resource-group Hub --vnet-name onprem
-az network vnet subnet create --address-prefix 10.0.1.0/24 --name Vmsubnet --resource-group Hub --vnet-name onprem
+az network vnet create --resource-group Hub --name onprem --location eastus --address-prefixes 10.1.0.0/16 --subnet-name HubVM --subnet-prefix 10.1.10.0/24
+az network vnet subnet create --address-prefix 10.1.0.0/24 --name GatewaySubnet --resource-group Hub --vnet-name onprem
+az network vnet subnet create --address-prefix 10.1.1.0/24 --name Vmsubnet --resource-group Hub --vnet-name onprem
 
 az network public-ip create --name onpremVMPubIP --resource-group Hub --location eastus --allocation-method Dynamic
 az network nic create --resource-group Hub -n onpremVMNIC --location eastus --subnet HubVM --private-ip-address 10.1.10.10 --vnet-name onprem --public-ip-address HubVMPubIP --ip-forwarding true
