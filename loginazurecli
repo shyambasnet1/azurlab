@@ -1,0 +1,25 @@
+# sign in as a different user
+az login --user <myAlias@myCompany.com> -password <myPassword>
+
+or az login 
+
+
+# get the current default subscription using show
+az account show --output table
+
+# get the current default subscription using list
+az account list --query "[?isDefault]"
+
+# store the default subscription  in a variable
+subscriptionId="$(az account list --query "[?isDefault].id" -o tsv)"
+echo $subscriptionId
+
+# change the active subscription using the subscription name
+az account set --subscription "My Demos"
+
+# change the active subscription using the subscription ID
+az account set --subscription "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+# change the active subscription using a variable
+subscriptionId="$(az account list --query "[?isDefault].id" -o tsv)"
+az account set --subscription $subscriptionId
