@@ -1,0 +1,2 @@
+Sometime customer complain they did not able to access some of virtual network ip prefix from on-premises. It happened due to misconfiguration of virtual network peering of gateway. He also can check 
+which ip address prefix virtual network gateway learning from inside Azure side.
