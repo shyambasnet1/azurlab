@@ -1,139 +1,440 @@
-#!/bin/bash
-# 
+Azure AI Speech provides speech-to-text and text-to-speech capabilities through speech recognition and synthesis. You can use prebuilt and custom Speech service models for a variety of tasks, from transcribing audio to text with high accuracy, to identifying speakers in conversations, creating custom voices, and more.
 
-# Load balance multiple websites
 
-# Variable block
-let "randomIdentifier=$RANDOM*$RANDOM"
-location="East US"
-resourceGroup="msdocs-load-balancer-rg-$randomIdentifier"
-tag="load-balance-multiple-web-sites-vm"
-availabilitySet="msdocs-availablity-set-lb-$randomIdentifier"
-vNet="msdocs-vnet-lb-$randomIdentifier"
-subnet="msdocs-subnet-lb-$randomIdentifier"
-loadBalancerPublicIp="msdocs-public-ip-lb-$randomIdentifier"
-loadBalancerFrontEndConfig1="msdocs-contoso-lb-$randomIdentifier"
-loadBalancerFrontEndConfig2="msdocs-fabrikam-lb-$randomIdentifier"
-loadBalancer="msdocs-load-balancer-$randomIdentifier"
-frontEndIp="msdocs-front-end-ip-lb-$randomIdentifier"
-frontEndIpConfig1="msdocs-front-end-ip-config-contoso-lb-$randomIdentifier"
-frontEndIpConfig2="msdocs-front-end-ip-config-fabrikam-lb-$randomIdentifier"
-backEndPool="msdocs-back-end-pool-lb-$randomIdentifier"
-backEndAddressPool1="msdocs-back-end-address-pool-contoso-lb-$randomIdentifier"
-backEndAddressPool2="msdocs-back-end-address-pool-fabrikam-lb-$randomIdentifier"
-probe80="msdocs-port80-health-probe-lb-$randomIdentifier"
-lbRuleConfig1="msdocs-contoso-load-balancer-rule-$randomIdentifier"
-lbRuleConfig2="msdocs-fabrikam-load-balancer-rule-$randomIdentifier"
-publicIpVm1="msdocs-public-ip-vm1-lb-$randomIdentifier"
-nicVm1="msdocs-nic-vm1-$randomIdentifier"
-ipConfig1="msdocs-ipconfig-config1-lb-$randomIdentifier"
-ipConfig2="msdocs-ipconfig-config2-lb-$randomIdentifier"
-vm1="msdocs-vm1-lb-$randomIdentifier"
-publicIpVm2="msdocs-public-ip-vm2-lb-$randomIdentifier"
-ipSku="Standard"
-nicVm2="msdocs-nic-vm2-lb-$randomIdentifier"
-ipConfig1="msdocs-ipconfig-config1-lb-$randomIdentifier"
-ipConfig2="msdocs-ipconfig-config2-lb-$randomIdentifier"
-vm2="msdocs-vm2-lb-$randomIdentifier"
-image="UbuntuLTS"
-login="azureuser"
+Computer Vision is a branch of artificial intelligence (AI) in which software interprets visual input, often from images or video feeds. In Microsoft Azure, you can use the Azure AI Vision service to implement multiple computer vision scenarios, including:
 
-# Create a resource group
-echo "Creating $resourceGroup in "$location"..."
-az group create --name $resourceGroup --location "$location" --tags $tag
+Image analysis
+Optical character recognition (OCR)
+Face detection and analysis
+Video analysis
 
-# Create an availability set for the two VMs that host both websites.
-echo "Creating $availabilitySet"
-az vm availability-set create --resource-group $resourceGroup --location "$location" --name $availabilitySet --platform-fault-domain-count 2 --platform-update-domain-count 2
 
-# Create a virtual network and a subnet.
-echo "Creating $vNet and $subnet"
-az network vnet create --resource-group $resourceGroup --name $vNet --address-prefix 10.0.0.0/16 --location "$location" --subnet-name $subnet --subnet-prefix 10.0.0.0/24
 
-# Create three public IP addresses; one for the load balancer and two for the front-end IP configurations.
-echo "Creating $loadBalancerPublicIp"
-az network public-ip create --resource-group $resourceGroup --name $loadBalancerPublicIp --allocation-method Dynamic
+Computer vision is accomplished by using large numbers of images to train a model.
+Image classification is a form of computer vision in which a model is trained with images that are labeled with the main subject of the image (in other words, what it's an image of) so that it can analyze unlabeled images and predict the most appropriate label - identifying the subject of the image.
+Object detection is a form of computer vision in which the model is trained to identify the location of specific objects in an image.
+There are more advanced forms of computer vision - for example, semantic segmentation is an advanced form of object detection where, rather than indicate an object's location by drawing a box around it, the model can identify the individual pixels in the image that belong to a particular object.
+You can combine computer vision and language models to create a multi-modal model that combines computer vision and generative AI capabilities.
 
-echo "Creating $loadBalancerFrontEndConfig1"  
-az network public-ip create --resource-group $resourceGroup --name $loadBalancerFrontEndConfig1 --allocation-method Dynamic
+Object detection provides the ability to generate bounding boxes identifying the locations of different types of vehicles in an image.
 
-echo "Creating $loadBalancerFrontEndConfig2"
-az network public-ip create --resource-group $resourceGroup --name $loadBalancerFrontEndConfig2 --allocation-method Dynamic
 
-# Create an Azure Load Balancer.
-echo "Creating $loadBalancer with $frontEndIP and $backEndPool"
-az network lb create --resource-group $resourceGroup --location "$location" --name $loadBalancer --frontend-ip-name $frontEndIp --backend-pool-name $backEndPool --public-ip-address $loadBalancerPublicIp
+Azure OpenAI is the only service capable of generating text that can be used in chat applications to create conversational experiences. The other workloads are Azure Cognitive Services used for different purposes, but not for generating text used in chat applications.
 
-# Create two front-end IP configurations for both web sites.
-echo "Creating $frontEndIpConfig1 for $loadBalancerFrontEndConfig1"
-az network lb frontend-ip create --resource-group $resourceGroup --lb-name $loadBalancer --public-ip-address $loadBalancerFrontEndConfig1 --name $frontEndIpConfig1
 
-echo "Creating $frontEndIpConfig2 for $loadBalancerFrontEndConfig2"  
-az network lb frontend-ip create --resource-group $resourceGroup --lb-name $loadBalancer --public-ip-address $loadBalancerFrontEndConfig2 --name $frontEndIpConfig2
 
-# Create the back-end address pools.
-echo "Creating $backEndAddressPool1"
-az network lb address-pool create --resource-group $resourceGroup --lb-name $loadBalancer --name $backEndAddressPool1
+You need to identify numerical values that represent the probability of humans developing diabetes based on age and body fat percentage.
 
-echo "Creating $backEndAddressPool2"
-az network lb address-pool create --resource-group $resourceGroup --lb-name $loadBalancer --name $backEndAddressPool2
+Which type of machine learning model should you use?
 
-# Create a probe on port 80.
-echo "Creating $probe80 in $loadBalancer"
-az network lb probe create --resource-group $resourceGroup --lb-name $loadBalancer --name $probe80 --protocol Http --port 80 --path /
+logistic regression
 
-# Create the load balancing rules forport 80.
-echo "Creating $lbRuleConfig1 for $loadBalancer"
-az network lb rule create --resource-group $resourceGroup --lb-name $loadBalancer --name $lbRuleConfig1 --protocol Tcp --probe-name $probe80 --frontend-port 5000 --backend-port 5000 --frontend-ip-name $frontEndIpConfig1 --backend-pool-name $backEndAddressPool1
+Multiple linear regression models a relationship between two or more features and a single label. Linear regression uses a single feature. Logistic regression is a type of classification model, which returns either a Boolean value or a categorical decision. Hierarchical clustering groups data points that have similar characteristics.
 
-echo "Creating $lbRuleConfig2 for $loadBalancer"
-az network lb rule create --resource-group $resourceGroup --lb-name $loadBalancer --name $lbRuleConfig2 --protocol Tcp --probe-name $probe80 --frontend-port 5000 --backend-port 5000 --frontend-ip-name $frontEndIpConfig2 --backend-pool-name $backEndAddressPool2
 
-# ############## VM1 ###############
+Which type of machine learning algorithm finds the optimal way to split a dataset into groups without relying on training and validating label predictions?
 
-# Create an Public IP for the first VM.
-echo "Creating $publicIpVm1"
-az network public-ip create --resource-group $resourceGroup --name $publicIpVm1 --allocation-method Dynamic
+A clustering algorithm is an example of unsupervised learning, which groups data points that have similar characteristics without relying on training and validating label predictions.
 
-# Create a network interface for VM1.
-echo "Creating $nicVm1 in $vNet and $subnet"
-az network nic create --resource-group $resourceGroup --vnet-name $vNet --subnet $subnet --name $nicVm1 --public-ip-address $publicIpVm1
 
-# Create IP configurations for Contoso and Fabrikam.
-echo "Creating $ipConfig1 for $nicVm1"
-az network nic ip-config create --resource-group $resourceGroup --name $ipConfig1 --nic-name $nicVm1 --lb-name $loadBalancer --lb-address-pools $backEndAddressPool1
+A healthcare organization has a dataset consisting of bone fracture scans that are categorized by using predefined fracture types. The organization wants to use machine learning to detect the different types of bone fractures for new scans before the scans are sent to a medical practitioner.
 
-echo "Creating $ipConfig2 for $nicVm1"
-az network nic ip-config create --resource-group $resourceGroup --name $ipConfig2 --nic-name $nicVm1 --lb-name $loadBalancer --lb-address-pools $backEndAddressPool2
+Which type of machine learning is this?
 
-# Create Vm1.
-echo "Creating $vm1"
-az vm create --resource-group $resourceGroup --name $vm1 --nics $nicVm1 --image $image --availability-set $availabilitySet --public-ip-sku $ipSku --admin-username $login --generate-ssh-keys
+classification
 
-############### VM2 ###############
 
-# Create an Public IP for the second VM.
-echo "Creating $publicIpVm2"
-az network public-ip create --resource-group $resourceGroup --name $publicIpVm2 --allocation-method Dynamic
+Classification is used to predict categories of data. It can predict which category or class an item of data belongs to. In this example, a machine learning model trained by using classification with labeled data can be used to determine the type of bone fracture in a new scan that is not labeled already. Featurization is not a machine learning type. Regression is used to predict numeric values. Clustering analyzes unlabeled data to find similarities in the data.
 
-# Create a network interface for VM2.
-echo "Creating $nicVm2 in $vNet and $subnet"
-az network nic create --resource-group $resourceGroup --vnet-name $vNet --subnet $subnet --name $nicVm2 --public-ip-address $publicIpVm2
 
-# Create IP-Configs for Contoso and Fabrikam.
-echo "Creating $ipConfig1 for $nicVm2"
-az network nic ip-config create --resource-group $resourceGroup --name $ipConfig1 --nic-name $nicVm2 --lb-name $loadBalancer --lb-address-pools $backEndAddressPool1
 
-echo "Creating $ipConfig2 for $nicVm2"
-az network nic ip-config create --resource-group $resourceGroup --name $ipConfig2 --nic-name $nicVm2 --lb-name $loadBalancer --lb-address-pools $backEndAddressPool2
+You plan to use machine learning to predict the probability of humans developing diabetes based on their age and body fat percentage.
 
-# Create Vm2.
-echo "Creating $vm2"
-az vm create --resource-group $resourceGroup --name $vm2 --nics $nicVm2 --image UbuntuLTS --availability-set $availabilitySet --public-ip-sku $ipSku --admin-username $login --generate-ssh-keys
+What should the model include?
 
-# List the virtual machines
-az vm list --resource-group $resourceGroup
-# </FullScript>
+two features and one label
 
-# echo "Deleting all resources"
-# az group delete --name $resourceGroup -y
+The scenario represents a model that is meant to establish a relationship between two features (age and body fat percentage) and one label (the likelihood of developing diabetes). The features are descriptive attributes (serving as the input), while the label is the characteristic you are trying to predict (serving as the output).
+
+In a regression machine learning algorithm, what are the characteristics of features and labels in a validation dataset?
+known feature and label values
+
+
+In a regression machine learning algorithm, a validation set contains known feature and label values.
+
+
+In a regression machine learning algorithm, what are the characteristics of features and labels in a training dataset?
+
+In a regression machine learning algorithm, a training set contains known feature and label values.
+
+
+A company is using machine learning to predict house prices based on appropriate house attributes.
+
+For the machine learning model, which attribute is the label?
+
+
+A company is using machine learning to predict house prices based on appropriate house attributes.
+
+For the machine learning model, which attribute is the label?
+
+
+The price of the house is the label you are attempting to predict through the machine learning model. This is typically done by using a regression model. Floor space size, number of bedrooms, and age of the house are all input variables for the model to help predict the house price label.
+
+
+A company wants to predict household water use based on the number of people in a house, the weather temperature, and the time of year.
+
+In terms of data labels and features, what is the label in this use case?
+
+
+
+water use
+This answer is correct.
+
+
+Water use is the label value that you want to predict, also known as the independent variable. Number of people in the house, weather temperature, and time of year are features, and are values that are dependent on the label. Number of people in the house, weather temperature, and time of year can influence the water consumed in a household.
+
+You need to create an automated machine learning (automated ML) model.
+
+Which resource should you create first in Azure Machine Learning studio?
+
+A dataset is required to create an automated machine learning (automated ML) run. A workspace must be created before you can access Machine Learning studio. An Azure container instance and an AKS cluster can be created as a deployment target, after training of a model is complete.
+
+
+
+You need to use the Azure Machine Learning designer to deploy a predictive service from a newly trained model.
+
+What should you do first in the Machine Learning designer?
+
+
+You need to use the Azure Machine Learning designer to deploy a predictive service from a newly trained model.
+
+What should you do first in the Machine Learning designer?
+
+Create an inference pipeline.
+
+To deploy a predictive service from a newly trained model by using the Machine Learning designer, you must first create a pipeline in the Machine Learning designer. Adding training modules by using the Machine Learning designer takes place before creating a trained model, which already exists. Adding a dataset by using the Machine Learning designer requires that a pipeline already exists. To create an inferencing cluster, you must use Machine Learning studio.
+
+
+Which three supervised machine learning models can you train by using automated machine learning (automated ML) in the Azure Machine Learning studio? Each correct answer presents a complete solution.
+
+
+
+Classification
+regression
+time-series forecasting
+
+Time-series forecasting, regression, and classification are supervised machine learning models. Automated ML learning can predict categories or classes by using a classification algorithm, as well as numeric values as part of the regression algorithm, and at a future point in time by using time-series data. Inference pipeline is not a machine learning model. Clustering is unsupervised machine learning and automated ML only works with supervised learning algorithms.
+
+
+Which three data transformation modules are in the Azure Machine Learning designer? Each correct answer presents a complete solution.
+
+
+Clean Missing Data
+Normalize Data
+Select Columns in Dataset
+
+Normalize Data is a data transformation module that is used to change the values of numeric columns in a dataset to a common scale, without distorting differences in the range of values. The Clean Missing Data module is part of preparing the data and data transformation process. Select Columns in Dataset is a data transformation component that is used to choose a subset of columns of interest from a dataset. The train clustering model is not a part of data transformation. The evaluate model is a component used to measure the accuracy of training models.
+
+
+Which artificial intelligence (AI) technique serves as the foundation for modern image classification solutions?
+
+
+
+deep learning
+
+Modern image classification solutions are based on deep learning techniques. Semantic segmentation provides the ability to classify individual pixels in an image depending on the object that they represent. Both linear regression and multiple linear regression use training and validating predictions to predict numeric values, so they are not part of image classification solutions.
+
+
+
+Which two specialized domain models are supported by Azure AI Vision when categorizing an image? Each correct answer presents a complete solution.
+
+celebrities
+landmarks
+
+When categorizing an image, the Azure AI Vision service supports two specialized domain models: celebrities and landmarks. Image types is an additional capability of the computer vision service, allowing it to detect the type of image, such as a clip art image or a line drawing. Both people_ and people_group are supported categories when performing image classification.
+
+
+Which computer vision service provides bounding coordinates as part of its output?
+
+object detection
+
+Object detection provides the ability to generate bounding boxes that identify the locations of different types of objects in an image, including the bounding box coordinates, designating the location of the object in the image. Semantic segmentation provides the ability to classify individual pixels in an image. Image classification classifies images based on their contents. Image analysis extracts information from the image to label it with tags or captions.
+
+
+Which process allows you to use optical character recognition (OCR)?
+digitizing medical records
+
+OCR can extract printed or handwritten text from images. In this case, it can be used to extract text from scanned medical records to produce a digital archive from paper-based documents. Identifying wildlife in an image is an example of a computer vision solution that uses object detection and is not suitable for OCR. Identifying a user requesting access to a laptop is done by taking images from the laptop’s webcam and using facial detection and recognition to identify the user requesting access. Translating speech to text is an example of using speech translation and uses the Azure AI Speech service as part of Azure AI Services.
+
+You have a set of images. Each image shows multiple vehicles. What allows you to identity different vehicle types in the same traffic monitoring image?
+
+object detection
+
+Object detection can be used to evaluate traffic monitoring images to quickly classify specific vehicle types, such as car, bus, or cyclist. Linear regression is a machine learning training algorithm for training regression models. Image classification is part of computer vision that is concerned with the primary contents of an image. OCR is used to extract text and handwriting from images.
+
+Which analytical task of the Azure AI Vision service returns bounding box coordinates?
+object detection
+
+Detecting objects identifies common objects and, for each, returns bounding box coordinates. Image categorization assigns a category to an image, but it does not return bounding box coordinates. Tagging involves associating an image with metadata that summarizes the attributes of the image, but it does not return bounding box coordinates. OCR detects printed and handwritten text in images, but it does not return bounding box coordinates.
+
+
+
+Which two prebuilt models allow you to use the Azure AI Document Intelligence service to scan information from international passports and sales accounts? Each correct answer presents part of the solution.
+
+
+ID document model
+
+invoice model
+
+The invoice model extracts key information from sales invoices and is suitable for extracting information from sales account documents. The ID document model is optimized to analyze and extract key information from US driver’s licenses and international passport biographical pages. The business card model, receipt model, and language model are not suitable to extract information from passports or sales account documents.
+
+
+Which two Azure AI Document Intelligence models include identifying common data fields as part of its data extraction capabilities? Each correct answer presents a complete solution.
+
+
+
+business card model
+
+invoice model
+
+When using the Face Detect API of the Azure AI Face service, which feature helps identify whether a human face has glasses or headwear?
+
+face attributes
+
+
+Face attributes are a set of features that can be detected by the Face Detect API. Attributes such as accessories (glasses, mask, headwear etc.) can be detected. Face rectangle, face ID, and face landmarks do not allow you to determine whether a person is wearing glasses or headwear.
+
+Which service can you use to train an image classification model?
+
+Azure AI Custom Vision
+Azure AI Custom Vision is an image recognition service that allows you to build and deploy your own image models. The Azure AI vision service, Azure AI Face service, and Azure AI Language service do not provide the capability to train your own image model.
+
+
+At which layer can you apply content filters to suppress prompts and responses for a responsible generative AI solution?
+
+
+safety system
+
+The safety system layer includes platform-level configurations and capabilities that help mitigate harm. For example, the Azure OpenAI service includes support for content filters that apply criteria to suppress prompts and responses based on the classification of content into four severity levels (safe, low, medium, and high) for four categories of potential harm (hate, sexual, violence, and self-harm).
+
+
+Select the answer that correctly completes the sentence.
+
+[Answer choice] can return responses, such as natural language, images, or code, based on natural language input.
+
+Generative AI
+
+Generative AI models offer the capability of generating images based on a prompt by using DALL-E models, such as generating images from natural language. The other AI capabilities are used in different contexts to achieve other goals.
+
+As per the NIST AI Risk Management Framework, what is the first stage to consider when developing a responsible generative AI solution?
+
+Select only one answer.
+
+Identify potential harms.
+This answer is correct.
+
+
+Identifying potential harms is the first stage when planning a responsible generative AI solution.
+
+
+
+Which two capabilities are examples of a GPT model? Each correct answer presents a complete solution.
+
+Create natural language.
+Understand natural language.
+
+Azure OpenAI natural language models can take in natural language and generate responses. GPT models are excellent at both understanding and creating natural language.
+
+
+
+Which three capabilities are examples of image generation features for a generative AI model? Each correct answer presents a complete solution.
+
+creating variations of an image
+
+
+editing an image
+
+new image creation
+
+
+Image generation models can take a prompt, a base image, or both, and create something new. These generative AI models can create both realistic and artistic images, change the layout or style of an image, and create variations of a provided image.
+
+You plan to develop an image processing solution that will use DALL-E as a generative AI model.
+
+Which capability is NOT supported by the DALL-E model?
+
+image description
+
+Image description is not a capability included in the DALL-E model, therefore, it is not a use case that can be implemented by using DALL-E, while the other three capabilities are offered by DALL-E in Azure OpenAI.
+
+
+
+Which generative AI model is used to generate images based on natural language prompts?
+
+DALL-E is a model that can generate images from natural language. GPT-4 and GPT-3.5 can understand and generate natural language and code but not images. Embeddings can convert text into numerical vector form to facilitate text similarity. Whisper can transcribe and translate speech to text.
+
+
+Select the answer that correctly completes the sentence.
+
+[Answer choice] can search, classify, and compare sources of text for similarity.
+
+Embeddings
+Embeddings is an Azure OpenAI model that converts text into numerical vectors for analysis. Embeddings can be used to search, classify, and compare sources of text for similarity.
+
+
+Which natural language processing (NLP) technique normalizes words before counting them?
+stemming
+Stemming normalizes words before counting them. Frequency analysis counts how often a word appears in a text. N-grams extend frequency analysis to include multi-term phrases. Vectorization captures semantic relationships between words by assigning them to locations in n-dimensional space.
+
+
+Which part of speech synthesis in natural language processing (NLP) involves breaking text into individual words such that each word can be assigned phonetic sounds?
+
+
+tokenization
+
+Tokenization is part of speech synthesis that involves breaking text into individual words such that each word can be assigned phonetic sounds. Transcribing is part of speech recognition, which involves converting speech into a text representation. Key phrase extraction is part of language processing, not speech synthesis. Lemmatization, also known as stemming, is part of language processing, not speech synthesis.
+
+
+
+
+Which Azure AI Service for Language feature can be used to analyze online user reviews to identify whether users view a product positively or negatively?
+
+sentiment analysis
+.
+Sentiment analysis provides sentiment labels, such as negative, neutral, and positive, based on a confidence score from text analysis. This makes it suitable for understanding user sentiment for product reviews. The named entity recognition, key phrase extraction, and language detection features cannot perform sentiment analysis for product reviews.
+
+
+
+Which three values are returned by the language detection feature of the Azure AI Language service in Azure?
+
+Select all answers that apply.
+
+
+
+ISO 6391 Code
+
+
+Language Name
+
+
+Score
+
+
+
+Language Name, ISO 6391 Code, and Score are three values returned by the Language service of natural language processing (NLP) in Azure. Bounding box coordinates are returned by the Azure AI Vision services in Azure. Wikipedia URL is one of potential values returned by entity linking of entity recognition.
+
+
+Which feature of the Azure AI Language service includes functionality that returns links to external websites to disambiguate terms identified in a text?
+entity recognition
+Entity recognition includes the entity linking functionality that returns links to external websites to disambiguate terms (entities) identified in a text. Key phrase extraction evaluates the text of a document and identifies its main talking points. Azure AI Language detection identifies the language in which text is written. Sentiment analysis evaluates text and returns sentiment scores and labels for each sentence.
+
+
+
+
+For which two scenarios is the Universal Language Model used by the speech-to-text API optimized? Each correct answer presents a complete solution.
+
+conversational
+This answer is correct.
+
+dictation
+
+The Universal Language Model used by the speech-to-text API is optimized for conversational and dictation scenarios. The acoustic, language, and pronunciation scenarios require developing your own model.
+
+
+Which type of translation does the Azure AI Translator service support?
+
+
+text-to-text
+This answer is correct.
+The Azure AI Translator service supports text-to-text translation, but it does not support speech-to-text, text-to-speech, or speech-to-speech translation.
+
+
+
+Which three features are elements of the Azure AI Speech service? Each correct answer presents a complete solution.
+Language identification, speaker recognition, and voice assistants are all elements of the Azure AI Speech service. Text translation and document translation are part of the Translator service
+
+Which feature of the Azure AI Translator service is available only to Custom Translator?
+
+model training with a dictionary
+
+Model training with a dictionary can be used with Custom Translator when you do not have enough parallel sentences to meet the 10,000 minimum requirements. The resulting model will typically complete training much faster than with full training and will use the baseline models for translation along with the dictionaries you have added.
+
+
+Which type of artificial intelligence (AI) workload provides the ability to classify individual pixels in an image depending on the object that they represent?
+
+semantic segmentation
+
+Semantic segmentation provides the ability to classify individual pixels in an image depending on the object that they represent. The other answer choices also process images, but their outcomes are different.
+
+
+
+Which two artificial intelligence (AI) workload scenarios are examples of natural language processing (NLP)? Each correct answer presents a complete solution.
+
+
+performing sentiment analysis on social media data
+
+
+translating text between different languages from product reviews
+
+Translating text between different languages from product reviews is an NLP workload that uses the Azure AI Translator service and is part of Azure AI Services. It can provide text translation of supported languages in real time. Performing sentiment analysis on social media data is an NLP that uses the sentiment analysis feature of the Azure AI Service for Language. It can provide sentiment labels, such as negative, neutral, and positive for text-based sentences and documents.
+
+
+
+You are exploring solutions to improve the document search and indexing service for employees.
+
+You need an artificial intelligence (AI) search solution that will include searching text in various types of documents, such as images.
+
+Which type of AI workload is this?
+
+data mining
+
+
+Data mining workloads primarily focus on the searching and indexing of data. The computer vision can be used to extract information from images, but it is not a search and indexing solution. Conversational AI is part of natural language processing (NLP) and facilitates the creation of chatbots. Semantic segmentation provides the ability to classify individual pixels in an image depending on the object that they represent.
+
+
+Which two artificial intelligence (AI) workload features are part of the Azure AI Vision service? Each correct answer presents a complete solution.
+
+
+optical character recognition (OCR)
+
+spatial analysis
+
+OCR and Spatial Analysis are part of the Azure AI Vision service. Sentiment analysis, entity recognition, and key phrase extraction are not part of the computer vision service.
+
+Which principle of responsible artificial intelligence (AI) raises awareness about the limitations of AI-based solutions?
+
+
+transparency
+This answer is correct.
+Transparency provides clarity regarding the purpose of AI solutions, the way they work, as well as their limitations. The privacy and security, reliability and safety, and accountability principles focus on the capabilities of AI, rather than raising awareness about its limitations.
+
+
+Which principle of responsible artificial intelligence (AI) has the objective of ensuring that AI solutions benefit all parts of society regardless of gender or ethnicity?
+
+The inclusiveness principle is meant to ensure that AI solutions empower and engage everyone, regardless of criteria such as physical ability, gender, sexual orientation, or ethnicity. Privacy and security, reliability and safety, and accountability do not discriminate based on these criteria, but also do not emphasize the significance of bringing benefits to all parts of the society.
+
+
+
+Which principle of responsible artificial intelligence (AI) defines the framework of governance and organization principles that meet ethical and legal standards of AI solutions?
+
+Select only one answer.
+
+accountability
+
+Accountability defines the framework of governance and organizational principles, which are meant to ensure that AI solutions meet ethical and legal standards that are clearly defined. The other answer choices do not define the framework of governance and organization principles, but provide guidance regarding the ethical and legal aspects of the corresponding standards.
+
+Which principle of responsible artificial intelligence (AI) plays the primary role when implementing an AI solution that meet qualifications for business loan approvals?
+Fairness is meant to ensure that AI models do not unintentionally incorporate a bias based on criteria such as gender or ethnicity. Transparency does not apply in this case since banks commonly use their proprietary models when processing loan approvals. Inclusiveness is also out of scope since not everyone is qualified for a loan. Safety is not a primary consideration since there is no direct threat to human life or health in this case.
+
+
+Which principle of responsible artificial intelligence (AI) ensures that an AI system meets any legal and ethical standards it must abide by?
+
+Select only one answer.
+
+accountability
+
+The accountability principle ensures that AI systems are designed to meet any ethical and legal standards that are applicable. The privacy and security principle states that AI systems must be designed to protect any personal and/or sensitive data. The inclusiveness principle states that AI systems must empower people in a positive and engaging way. The fairness principle is applied to AI system to ensure that users of the systems are treated fairly.
+
+
+
+
